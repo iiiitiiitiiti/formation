@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>たちいち帳 見本</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Noto Sans JP", sans-serif; background: #ECEEF1; color: #1F2329; padding: 24px 16px 48px; }
+  h1 { font-size: 20px; text-align: center; margin-bottom: 4px; }
+  .lead { text-align: center; font-size: 13px; margin-bottom: 24px; }
+  .row { display: flex; flex-wrap: wrap; gap: 28px; justify-content: center; }
+  .col { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .tag { font-weight: 700; font-size: 15px; }
+  .note { font-size: 12px; max-width: 360px; line-height: 1.7; }
+  .phone { width: 375px; height: 780px; border-radius: 44px; overflow: hidden; position: relative;
+           box-shadow: 0 0 0 10px #22252A, 0 20px 50px rgba(0,0,0,.25); display: flex; flex-direction: column; }
+  .bar { height: 44px; flex: none; }
+  .top { display: flex; align-items: center; justify-content: space-between; padding: 6px 16px 10px; }
+  .top b { font-size: 17px; }
+  .icons { display: flex; gap: 6px; }
+  .ib { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; font-size: 15px; }
+  .stage { padding: 0 16px; }
+  .play { display: flex; align-items: center; gap: 10px; padding: 12px 16px; }
+  .pbtn { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; font-size: 18px; flex: none; }
+  .count { font-size: 13px; line-height: 1.3; }
+  .count strong { font-size: 22px; font-weight: 900; }
+  .track { flex: 1; height: 6px; border-radius: 3px; position: relative; }
+  .track i { position: absolute; left: 0; top: 0; bottom: 0; width: 38%; border-radius: 3px; }
+  .scenes { display: flex; gap: 10px; padding: 8px 16px 0; overflow: hidden; }
+  .sc { flex: none; width: 92px; border-radius: 12px; padding: 6px; font-size: 11px; }
+  .sc svg { display: block; width: 100%; height: auto; border-radius: 6px; }
+  .sc p { margin-top: 4px; display: flex; justify-content: space-between; }
+  .add { flex: none; width: 52px; border-radius: 12px; display: grid; place-items: center; font-size: 22px; }
+  .bottom { margin-top: auto; display: flex; justify-content: space-around; padding: 10px 16px 30px; font-size: 11px; }
+  .bottom div { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .bottom span { font-size: 18px; }
+
+  /* A 劇場の床 */
+  .A { background: #FFFFFF; }
+  .A .ib { background: #F1F2F4; }
+  .A .pbtn { background: #1F2329; color: #fff; }
+  .A .track { background: #E4E6EA; } .A .track i { background: #1F2329; }
+  .A .sc { background: #F1F2F4; } .A .sc.on { outline: 2px solid #1F2329; }
+  .A .add { background: #F1F2F4; }
+
+  /* B ライトトーン */
+  .B { background: #FBFAF7; }
+  .B .ib { background: #fff; border: 1px solid #E7E3DA; }
+  .B .pbtn { background: #FFD8C2; }
+  .B .track { background: #EDE9E1; } .B .track i { background: #F4A98A; }
+  .B .sc { background: #fff; border: 1px solid #E7E3DA; } .B .sc.on { border: 2px solid #F4A98A; }
+  .B .add { background: #fff; border: 1px dashed #D8D2C6; }
+
+  /* C インフォグラフィック */
+  .C { background: #FFFFFF; }
+  .C .ib { background: #EEF4FF; }
+  .C .pbtn { background: #BFE3FF; }
+  .C .scenes { flex-direction: column; gap: 6px; }
+  .C .band { display: flex; align-items: center; gap: 10px; border-radius: 10px; padding: 8px 12px; font-size: 13px; }
+  .C .band b { font-size: 18px; font-weight: 900; width: 28px; }
+  .C .band .meter { margin-left: auto; display: flex; gap: 2px; }
+  .C .band .meter i { width: 6px; height: 14px; border-radius: 2px; background: rgba(31,35,41,.25); }
+  .C .band .meter i.m { background: rgba(31,35,41,.7); }
+  .C .band.on { box-shadow: inset 0 0 0 2px #1F2329; }
+</style>
+</head>
+<body>
+<h1>たちいち帳 見た目の見本</h1>
+<p class="lead">同じ場面（8人・3つ目の場面）を3つの見た目で並べました。中身は同じで、雰囲気だけ違います。</p>
+<div class="row">
+  <div class="col">
+    <div class="tag">A 劇場の床</div>
+    <div class="phone A" id="A"></div>
+    <p class="note">ステージは本物の床のように黒く、線は白いテープ。人は明るい色の丸。画面のほかの部分は白。練習場の景色に近い。</p>
+  </div>
+  <div class="col">
+    <div class="tag">B ライトトーン</div>
+    <div class="phone B" id="B"></div>
+    <p class="note">全体を明るい生成りと淡い色でまとめる。線は細く控えめで、人の色が主役。やわらかい印象。</p>
+  </div>
+  <div class="col">
+    <div class="tag">C インフォグラフィック</div>
+    <div class="phone C" id="C"></div>
+    <p class="note">センターの軸と番号を図表のように太く見せる。場面は色の帯で並べ、カウントを目盛りで見せる。流れが一目で分かる。</p>
+  </div>
+</div>
+
+<script>
+const people = [
+  { n: "あお", c: "#FFB8B8", x: -3, y: 3, px: -3.5, py: 1.5 },
+  { n: "みく", c: "#FFD59E", x: -1, y: 3, px: -1.5, py: 1.5 },
+  { n: "はな", c: "#FFF09E", x: 1, y: 3, px: 0.5, py: 1.5 },
+  { n: "れい", c: "#C8F0A8", x: 3, y: 3, px: 2.5, py: 1.5 },
+  { n: "ゆい", c: "#A8E6E0", x: -2, y: 1.5, px: -2.5, py: 3.5 },
+  { n: "さき", c: "#B4D4FF", x: 0, y: 1.5, px: 0, py: 3.5 },
+  { n: "まい", c: "#D8C4FF", x: 2, y: 1.5, px: 2.5, py: 3.5 },
+  { n: "のあ", c: "#FFC4E6", x: 0, y: 4.2, px: 5, py: 4.2 },
+];
+const W = 8, D = 5, WING = 1.5, SIDE = 4, ROWS = 5;
+
+function stageSvg(theme, opts = {}) {
+  const small = opts.small;
+  const padTop = small ? 0.2 : 0.7, padBottom = small ? 0.2 : 0.9;
+  const minX = -W / 2 - WING, vbW = W + WING * 2, vbH = D + padTop + padBottom;
+  // y=0 は客席側。画面では下
+  const Y = (y) => padTop + (D - y);
+  const t = {
+    A: { floor: "#1E2025", wing: "#2C2F36", line: "rgba(255,255,255,.35)", center: "#FFFFFF", num: "#1F2329", lab: "#1F2329", ring: "#1F2329", arrow: "rgba(255,255,255,.55)", text: "#1F2329", bg: "#FFFFFF" },
+    B: { floor: "#F3EFE6", wing: "#EAE4D8", line: "#DED6C6", center: "#C9BBA0", num: "#8A7F6B", lab: "#1F2329", ring: "#FFFFFF", arrow: "rgba(31,35,41,.3)", text: "#1F2329", bg: "#FBFAF7" },
+    C: { floor: "#F5F8FC", wing: "#E9EEF5", line: "#D5DEEA", center: "#1F2329", num: "#1F2329", lab: "#1F2329", ring: "#1F2329", arrow: "rgba(31,35,41,.35)", text: "#1F2329", bg: "#FFFFFF" },
+  }[theme];
+  let s = `<svg viewBox="${minX} 0 ${vbW} ${vbH}" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%">`;
+  s += `<rect x="${minX}" y="${padTop}" width="${vbW}" height="${D}" fill="${t.wing}" ${theme === "B" ? 'rx="0.25"' : ""}/>`;
+  s += `<rect x="${-W / 2}" y="${padTop}" width="${W}" height="${D}" fill="${t.floor}"/>`;
+  const step = (W / 2) / SIDE;
+  for (let i = -SIDE; i <= SIDE; i++) {
+    const x = i * step, isC = i === 0;
+    const sw = isC ? (theme === "C" ? 0.06 : 0.04) : 0.015;
+    s += `<line x1="${x}" y1="${padTop}" x2="${x}" y2="${padTop + D}" stroke="${isC ? t.center : t.line}" stroke-width="${sw}" ${theme === "A" && !isC ? 'stroke-dasharray="0.15 0.1"' : ""}/>`;
+    if (!small) {
+      if (theme === "C") {
+        s += `<rect x="${x - 0.22}" y="${padTop + D + 0.12}" width="0.44" height="0.36" rx="0.08" fill="${isC ? "#1F2329" : "#E3EAF4"}"/>`;
+        s += `<text x="${x}" y="${padTop + D + 0.39}" font-size="0.26" font-weight="900" text-anchor="middle" fill="${isC ? "#fff" : "#1F2329"}">${Math.abs(i)}</text>`;
+      } else {
+        s += `<text x="${x}" y="${padTop + D + 0.4}" font-size="0.28" font-weight="${isC ? 700 : 500}" text-anchor="middle" fill="${t.num}">${Math.abs(i)}</text>`;
+      }
+    }
+  }
+  for (let r = 1; r < ROWS; r++) {
+    const y = Y(r * D / ROWS);
+    s += `<line x1="${-W / 2}" y1="${y}" x2="${W / 2}" y2="${y}" stroke="${t.line}" stroke-width="0.015" ${theme === "A" ? 'stroke-dasharray="0.15 0.1"' : ""}/>`;
+  }
+  if (!small) {
+    s += `<text x="${minX + 0.1}" y="${padTop - 0.22}" font-size="0.26" fill="${t.lab}">下手</text>`;
+    s += `<text x="${minX + vbW - 0.1}" y="${padTop - 0.22}" font-size="0.26" text-anchor="end" fill="${t.lab}">上手</text>`;
+    s += `<text x="0" y="${padTop + D + 0.78}" font-size="0.24" text-anchor="middle" fill="${t.lab}" opacity=".7">客席</text>`;
+    // 動線
+    for (const p of people) {
+      const x1 = p.px, y1 = Y(p.py), x2 = p.x, y2 = Y(p.y);
+      const dx = x2 - x1, dy = y2 - y1, len = Math.hypot(dx, dy);
+      if (len < 0.3) continue;
+      const ux = dx / len, uy = dy / len, ex = x2 - ux * 0.38, ey = y2 - uy * 0.38;
+      s += `<circle cx="${x1}" cy="${y1}" r="0.16" fill="none" stroke="${t.arrow}" stroke-width="0.03" stroke-dasharray="0.06 0.05"/>`;
+      s += `<line x1="${x1}" y1="${y1}" x2="${ex}" y2="${ey}" stroke="${t.arrow}" stroke-width="0.04" stroke-dasharray="0.12 0.08"/>`;
+      const ax = ex - ux * 0.18, ay = ey - uy * 0.18;
+      s += `<path d="M${ex} ${ey} L${ax - uy * 0.1} ${ay + ux * 0.1} L${ax + uy * 0.1} ${ay - ux * 0.1} Z" fill="${t.arrow}"/>`;
+    }
+  }
+  const R = small ? 0.38 : 0.36;
+  for (const p of people) {
+    const sel = !small && p.n === "さき";
+    s += `<circle cx="${p.x}" cy="${Y(p.y)}" r="${R}" fill="${p.c}" stroke="${t.ring}" stroke-width="${theme === "B" ? 0.05 : 0.035}"/>`;
+    if (sel) s += `<circle cx="${p.x}" cy="${Y(p.y)}" r="${R + 0.12}" fill="none" stroke="${theme === "A" ? "#FFFFFF" : "#1F2329"}" stroke-width="0.05"/>`;
+    if (!small) s += `<text x="${p.x}" y="${Y(p.y) + 0.1}" font-size="0.27" font-weight="700" text-anchor="middle" fill="#1F2329">${p.n}</text>`;
+  }
+  return s + "</svg>";
+}
+
+function phone(theme) {
+  const scenes = [["1", "8×2"], ["2", "8×1"], ["3", "8×2"], ["4", "4"]];
+  let h = `<div class="bar"></div>
+  <div class="top"><b>発表会 2027「Pua」</b><div class="icons"><div class="ib">↶</div><div class="ib">↷</div><div class="ib">⋯</div></div></div>
+  <div class="stage">${stageSvg(theme)}</div>
+  <div class="play"><div class="pbtn">▶</div><div class="count">3つ目の8<br><strong>5</strong></div><div class="track"><i></i></div><div class="count">♩=96</div></div>`;
+  if (theme === "C") {
+    const colors = ["#FFE1D6", "#FFF1C2", "#D6F0E0", "#DCE8FF"];
+    h += `<div class="scenes">` + scenes.map((s, i) => `<div class="band ${i === 2 ? "on" : ""}" style="background:${colors[i]}"><b>${s[0]}</b>場面${s[0]}<div class="meter">${Array.from({ length: 6 }, (_, k) => `<i class="${k < (i === 3 ? 2 : 3) ? "m" : ""}"></i>`).join("")}</div><span>${s[1]}</span></div>`).join("") + `</div>`;
+  } else {
+    h += `<div class="scenes">` + scenes.map((s, i) => `<div class="sc ${i === 2 ? "on" : ""}">${stageSvg(theme, { small: true })}<p><b>場面${s[0]}</b><span>${s[1]}</span></p></div>`).join("") + `<div class="add">＋</div></div>`;
+  }
+  const sw = ["#FFB8B8", "#FFD59E", "#FFF09E", "#C8F0A8", "#A8E6E0", "#B4D4FF", "#D8C4FF", "#FFC4E6"];
+  const sheetBg = { A: "#F1F2F4", B: "#FFFFFF", C: "#EEF4FF" }[theme];
+  h += `<div style="margin:14px 16px 0;padding:14px;border-radius:16px;background:${sheetBg};${theme === "B" ? "border:1px solid #E7E3DA;" : ""}">
+    <div style="display:flex;align-items:center;gap:10px;font-size:13px"><span style="width:28px;height:28px;border-radius:50%;background:#B4D4FF;border:1.5px solid #1F2329"></span><b style="font-size:16px">さき</b><span style="margin-left:auto">場面3　x 0・y 1.5m</span></div>
+    <div style="display:flex;gap:8px;margin-top:12px">${sw.map((c) => `<span style="width:28px;height:28px;border-radius:50%;background:${c};${c === "#B4D4FF" ? "outline:2px solid #1F2329;outline-offset:2px" : ""}"></span>`).join("")}</div>
+  </div>`;
+  h += `<div class="bottom"><div><span>＋</span>人を足す</div><div><span>▦</span>ステージ</div><div><span>⇣</span>PDF で配る</div></div>`;
+  return h;
+}
+for (const t of ["A", "B", "C"]) document.getElementById(t).innerHTML = phone(t);
+</script>
+</body>
+</html>
