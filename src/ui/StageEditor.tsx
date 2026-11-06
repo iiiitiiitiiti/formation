@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
-import { snap, snapSteps } from "../model/grid";
+import { snap } from "../model/grid";
 import type { Position, Positions, Work } from "../model/types";
 import { buildStageShapes, DARK_STAGE, LIGHT_STAGE } from "../render/stageShapes";
 import { ShapeList } from "./StageSvg";
@@ -16,6 +16,8 @@ type Props = {
   /** 動かし始める前に呼ぶ（再生を止め、場面の止まりの位置へ合わせる） */
   onBeginEdit: () => void;
   onCommit: (memberId: string, p: Position) => void;
+  /** 矢印キーで動かす（刻みの数） */
+  onNudge: (memberId: string, dx: number, dy: number) => void;
 };
 
 type Drag = { id: string; pointerId: number; grab: Position; pos: Position; moved: boolean; client: { x: number; y: number } };
@@ -94,6 +96,11 @@ export function StageEditor(p: Props) {
   };
 
   const onPointerDown = (e: PointerEvent<SVGSVGElement>) => {
+    // 最初の指が触れたときは、取りこぼした指の記録を捨てる
+    if (e.isPrimary) {
+      pointers.current.clear();
+      pinch.current = null;
+    }
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pointers.current.size === 2) {
       // 2本目の指が触れたら、ドラッグは元の位置へ戻して拡大へ移る
@@ -177,11 +184,8 @@ export function StageEditor(p: Props) {
     const d = dir[e.key];
     if (d) {
       e.preventDefault();
-      p.onBeginEdit();
-      const steps = p.snapOn ? snapSteps(p.work.stage) : { x: 0.25, y: 0.25 };
       const k = e.shiftKey ? 4 : 1;
-      const cur = p.positions[id];
-      p.onCommit(id, snap({ x: cur.x + d[0] * steps.x * k, y: cur.y + d[1] * steps.y * k }, p.work.stage, p.snapOn));
+      p.onNudge(id, d[0] * k, d[1] * k);
     } else if (e.key === "Escape") {
       p.onSelect(null);
     }

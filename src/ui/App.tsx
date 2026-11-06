@@ -52,7 +52,10 @@ export function App() {
           initial={open}
           dark={theme === "dark"}
           onChange={onChange}
-          onBack={() => setOpenId(null)}
+          onBack={() => {
+            setOpenId(null);
+            toast.hide();
+          }}
           onToggleTheme={toggleTheme}
           notify={toast.show}
         />

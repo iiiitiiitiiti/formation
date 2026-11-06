@@ -26,11 +26,18 @@ export function usePlayback(total: number, tempo: number) {
     return () => cancelAnimationFrame(raf);
   }, [playing, tempo, total]);
 
-  const play = useCallback(() => {
-    if (total <= 0) return;
-    if (tRef.current >= total) setT(0);
-    setPlaying(true);
-  }, [total]);
+  /** from を渡すとそこから再生する。末尾にいるときは頭から */
+  const play = useCallback(
+    (from?: number) => {
+      if (total <= 0) return;
+      let start = from ?? tRef.current;
+      if (start >= total) start = 0;
+      tRef.current = start;
+      setT(start);
+      setPlaying(true);
+    },
+    [total],
+  );
   const pause = useCallback(() => setPlaying(false), []);
   const seek = useCallback((v: number) => setT(Math.max(0, Math.min(total, v))), [total]);
 

@@ -1,7 +1,30 @@
-import { useId } from "react";
+import { useId, useState, type InputHTMLAttributes } from "react";
 import { countLabel, type SceneSpan } from "../model/timeline";
 import { NAME_MAX, PALETTE, type Member, type Work } from "../model/types";
 import { Icon } from "./Icon";
+
+/**
+ * 打っている途中の文字を手元に持つ入力欄。変えるたびに onText へ渡すが、表示は打った文字のまま。
+ * 保存側が空白を整えたり空を断ったりしても、打っている最中の欄は書き換えない。欄を離れたら保存側の値に戻す
+ */
+export function DraftInput(p: { value: string; onText: (v: string) => void } & Omit<InputHTMLAttributes<HTMLInputElement>, "value" | "onChange">) {
+  const { value, onText, onBlur, ...rest } = p;
+  const [draft, setDraft] = useState<string | null>(null);
+  return (
+    <input
+      {...rest}
+      value={draft ?? value}
+      onChange={(e) => {
+        setDraft(e.target.value);
+        onText(e.target.value);
+      }}
+      onBlur={(e) => {
+        setDraft(null);
+        onBlur?.(e);
+      }}
+    />
+  );
+}
 
 /** − と ＋ で数を変える入力。直接打ち込むこともできる */
 export function Stepper(p: {
@@ -15,7 +38,15 @@ export function Stepper(p: {
   onChange: (v: number) => void;
 }) {
   const id = useId();
+  // 打っている途中の文字。欄を離れるか Enter で確定する（1文字ごとに丸めると、12 を打つ途中の 1 で決まってしまう）
+  const [draft, setDraft] = useState<string | null>(null);
   const clamp = (v: number) => Math.min(p.max, Math.max(p.min, v));
+  const commit = () => {
+    if (draft === null) return;
+    const v = Number(draft);
+    if (draft.trim() !== "" && Number.isFinite(v) && v !== p.value) p.onChange(clamp(v));
+    setDraft(null);
+  };
   return (
     <div className="stepper">
       <label htmlFor={id}>{p.label}</label>
@@ -36,11 +67,17 @@ export function Stepper(p: {
           min={p.min}
           max={p.max}
           step={p.step}
-          value={p.value}
+          value={draft ?? p.value}
           disabled={p.disabled}
-          onChange={(e) => {
-            const v = Number(e.target.value);
-            if (e.target.value !== "" && Number.isFinite(v)) p.onChange(clamp(v));
+          onChange={(e) => setDraft(e.target.value)}
+          onBlur={commit}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") commit();
+            if (e.key === "Escape" && draft !== null) {
+              e.preventDefault();
+              e.stopPropagation();
+              setDraft(null);
+            }
           }}
         />
         {p.unit && <span className="unit">{p.unit}</span>}
@@ -171,12 +208,12 @@ export function MemberPanel(p: {
         <label htmlFor={id} className="visually-hidden">
           名前
         </label>
-        <input
+        <DraftInput
           id={id}
           className="name-input"
           value={p.member.name}
           maxLength={NAME_MAX}
-          onChange={(e) => p.onRename(e.target.value)}
+          onText={p.onRename}
         />
         <button type="button" className="icon-btn" onClick={p.onRemove} aria-label={`${p.member.name}を消す`}>
           <Icon name="trash" />

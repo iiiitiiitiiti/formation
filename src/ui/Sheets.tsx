@@ -17,7 +17,7 @@ import {
   type Work,
 } from "../model/types";
 import { Icon } from "./Icon";
-import { Stepper } from "./Parts";
+import { DraftInput, Stepper } from "./Parts";
 
 export function SceneSettings(p: {
   scene: Scene;
@@ -33,12 +33,12 @@ export function SceneSettings(p: {
     <div className="sheet-content">
       <div className="field">
         <label htmlFor={memoId}>メモ</label>
-        <input
+        <DraftInput
           id={memoId}
           value={p.scene.memo}
           maxLength={MEMO_MAX}
           placeholder={sceneTitle(p.index)}
-          onChange={(e) => p.onChange({ memo: e.target.value })}
+          onText={(memo) => p.onChange({ memo })}
         />
       </div>
       <Stepper

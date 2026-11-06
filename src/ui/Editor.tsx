@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { snap, snapSteps } from "../model/grid";
 import { markExported } from "../model/storage";
 import { positionsAt, sceneIndexAt, sceneSpans, totalCounts } from "../model/timeline";
 import { MAX_MEMBERS, type Position, type Work } from "../model/types";
@@ -83,6 +84,16 @@ export function Editor(p: {
   };
 
   const commitPosition = (memberId: string, pos: Position) => h.set(setPosition(w, editSceneId(), memberId, pos));
+
+  /** 矢印キーで動かす。移動の途中で止めていても、その場面の止まりの位置から刻みの分だけ動かす */
+  const nudge = (memberId: string, dx: number, dy: number) => {
+    const sid = editSceneId();
+    const cur = w.positions[sid]?.[memberId];
+    if (!cur) return;
+    beginEdit();
+    const steps = snapOn ? snapSteps(w.stage) : { x: 0.25, y: 0.25 };
+    h.set(setPosition(w, sid, memberId, snap({ x: cur.x + dx * steps.x, y: cur.y + dy * steps.y }, w.stage, snapOn)));
+  };
 
   const addPerson = () => {
     if (w.members.length >= MAX_MEMBERS) {
@@ -170,6 +181,7 @@ export function Editor(p: {
             onSelect={setSelected}
             onBeginEdit={beginEdit}
             onCommit={commitPosition}
+            onNudge={nudge}
           />
           {w.members.length === 0 && <p className="empty-hint">下の「人を足す」から踊る人を足してください</p>}
         </div>
@@ -183,8 +195,7 @@ export function Editor(p: {
             tempo={w.tempo}
             onPlay={() => {
               // 場面で止めているときは、その場面へ移る動きから見せる
-              if (atHold && current > 0) play.seek(spans[current].start);
-              play.play();
+              play.play(atHold && current > 0 ? spans[current].start : undefined);
             }}
             onPause={play.pause}
             onToSceneStart={() => {
@@ -209,9 +220,10 @@ export function Editor(p: {
               onRename={(name) => h.set(updateMember(w, member.id, { name }), `name:${member.id}`)}
               onColor={(color) => h.set(updateMember(w, member.id, { color }))}
               onRemove={() => {
-                h.set(removeMember(w, member.id));
+                const after = removeMember(w, member.id);
+                h.set(after);
                 setSelected(null);
-                p.notify(`${member.name}を消しました`, { label: "元に戻す", run: h.undo });
+                p.notify(`${member.name}を消しました`, { label: "元に戻す", run: () => h.current() === after && h.undo() });
               }}
               onClose={() => setSelected(null)}
             />
@@ -269,10 +281,11 @@ export function Editor(p: {
             setSceneIdx(current + 1);
           }}
           onRemove={() => {
-            h.set(removeScene(w, scene.id));
+            const after = removeScene(w, scene.id);
+            h.set(after);
             setSceneIdx(Math.max(0, current - 1));
             setSheet(null);
-            p.notify(`場面${current + 1}を消しました`, { label: "元に戻す", run: h.undo });
+            p.notify(`場面${current + 1}を消しました`, { label: "元に戻す", run: () => h.current() === after && h.undo() });
           }}
         />
       </Sheet>

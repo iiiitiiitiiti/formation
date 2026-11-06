@@ -88,7 +88,12 @@ export function parseWork(v: unknown): Work | null {
 
 export function loadWorks(): { works: Work[]; recovered: boolean } {
   const s = storage();
-  const raw = s?.getItem(KEY);
+  let raw: string | null = null;
+  try {
+    raw = s?.getItem(KEY) ?? null;
+  } catch {
+    raw = null;
+  }
   if (!s || raw == null) return { works: [], recovered: false };
   let data: unknown;
   try {
@@ -160,7 +165,11 @@ export function markExported(w: Work): Work {
 }
 
 export function loadTheme(): Theme {
-  return storage()?.getItem(THEME_KEY) === "dark" ? "dark" : "light";
+  try {
+    return storage()?.getItem(THEME_KEY) === "dark" ? "dark" : "light";
+  } catch {
+    return "light";
+  }
 }
 
 export function saveTheme(t: Theme): void {
