@@ -1,14 +1,27 @@
 /// <reference types="vitest/config" />
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 
 const base = "/formation/";
 
+/** 公開用のビルドにだけ入れる安全設定。開発サーバーは CSS を <style> で差し込むので、開発中は入れない */
+const CSP =
+  "default-src 'self'; img-src 'self' data: blob:; style-src 'self'; font-src 'self' data:; script-src 'self'; connect-src 'self' data: blob:; worker-src 'self' blob:; base-uri 'self'";
+
+const cspOnBuild = (): Plugin => ({
+  name: "csp-on-build",
+  apply: "build",
+  transformIndexHtml: (html) =>
+    html.replace("<meta charset=\"UTF-8\" />", `<meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="${CSP}" />`),
+});
+
 export default defineConfig({
   base,
   plugins: [
     react(),
+    cspOnBuild(),
     VitePWA({
       registerType: "prompt",
       manifest: {
